@@ -928,24 +928,6 @@ You will see that the response is no longer sorted by date. The buckets are now 
 ![image](https://user-images.githubusercontent.com/60980933/116132063-5794cf80-a68a-11eb-9e85-f129054cacb2.png)
 
 
-### Q and A from the live workshop
-
-**1. Aggregated result is based on shard level correct?**
-
-Yes, you are correct!
-
-Aggregation is performed on every shard and the results from every shard are sent to the coordinator node. The coordinator node merges the shard results together into one final response which is sent to the user. 
-
-**2.  Does this include bookends? So are there duplicates at the 50.0 and 200? I was just wondering if it went for example 0-50 and 50.+ to 200.0 and then 200.+**
-
-What a great question! I assume you are referring to the range aggregation example where I set the ranges from 0-50, 50-200, and 200+.
-
-Let's take 0-50 range for example. This range has a lower limit(0) and a upper limit(50). When it comes to range in Elasticsearch, the lower limit is included but the upper limit is excluded. So the range 0-50 grabs everything from 0 upto but not including 50.
-
-**3. What about Time Weighted Average, is it possible?**
-
-At present, Elasticsearch does not have a built in feature that automatically calculates the time weighted average. However, you can always write a script that represents the formula for calculating the time weighted average and include it in the aggregation. Here is a documentation on [how to write scripts](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-scripting-using.html)!  
-
 ## Reference
 [Beginner's Crash Course to Elastic Stack](https://github.com/LisaHJung/Beginners-Crash-Course-to-the-Elastic-Stack-Series): 
 
