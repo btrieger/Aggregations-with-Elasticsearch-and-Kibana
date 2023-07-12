@@ -67,7 +67,7 @@ POST _reindex
 ```
 **STEP 3: Remove the negative values from the field "UnitPrice".**
 
-When you explore the minimum unit price in this dataset, you will see that the minimum unit price value is -11062.06. To keep our data simple, I used the delete_by_query API to remove all unit prices less than 0. 
+When you explore the minimum unit price in this dataset, you will see that the minimum unit price value is -11062.06. To keep our data simple, I used the delete_by_query API to remove all unit prices less than 1. 
 
 ```
 POST ecommerce_data/_delete_by_query
@@ -75,7 +75,7 @@ POST ecommerce_data/_delete_by_query
   "query": {
     "range": {
       "UnitPrice": {
-        "lte": 0
+        "lte": 1
       }
     }
   }
