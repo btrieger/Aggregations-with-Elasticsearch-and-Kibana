@@ -927,6 +927,44 @@ You will see that the response is no longer sorted by date. The buckets are now 
 
 ![image](https://user-images.githubusercontent.com/60980933/116132063-5794cf80-a68a-11eb-9e85-f129054cacb2.png)
 
+### Pipeline Aggregations
+Pipeline aggregations allow you to perform aggregations on the output of other aggregations as compared to the output of document sets.
+
+#### MovingFn Aggregations
+MovingFn aggregations allow you to apply a script against the output of histogram or date histogram with a moving window.
+
+For example if you wanted to get the average sum of a price over a sliding 3 month time perido that included the next and previous month. We could do the following:
+```http
+POST ecommerce_data/_search
+{
+  "size": 0,
+  "aggs": {
+    "my_date_histo": {                  
+      "date_histogram": {
+        "field": "InvoiceDate",
+        "calendar_interval": "1M"
+      },
+      "aggs": {
+        "the_sum": {
+          "sum": { "field": "UnitPrice" }   
+        },
+        "the_movfn": {
+          "moving_fn": {
+            "buckets_path": "the_sum",  
+            "window": 3,
+            "shift": 1,
+            "script": "MovingFunctions.unweightedAvg(values)"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+The output would look like the following:
+
+![movingFnOutput](images/movingFnOutput)
 
 ## Reference
 [Beginner's Crash Course to Elastic Stack](https://github.com/LisaHJung/Beginners-Crash-Course-to-the-Elastic-Stack-Series): 
