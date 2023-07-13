@@ -933,7 +933,7 @@ Pipeline aggregations allow you to perform aggregations on the output of other a
 #### MovingFn Aggregations
 MovingFn aggregations allow you to apply a script against the output of histogram or date histogram with a moving window.
 
-For example if you wanted to get the average sum of a price over a sliding 3 month time perido that included the next and previous month. We could do the following:
+For example if you wanted to get the average sum of unit prices over a sliding 3 month time period that included the next and previous month. We could do the following:
 ```http
 POST ecommerce_data/_search
 {
@@ -952,7 +952,7 @@ POST ecommerce_data/_search
           "moving_fn": {
             "buckets_path": "the_sum",  
             "window": 3,
-            "shift": 1,
+            "shift": 2,
             "script": "MovingFunctions.unweightedAvg(values)"
           }
         }
@@ -964,7 +964,7 @@ POST ecommerce_data/_search
 
 The output would look like the following:
 
-![movingFnOutput](images/movingFnOutput)
+![movingFnOutput](images/movingFnOutput.png)
 
 ## Reference
 [Beginner's Crash Course to Elastic Stack](https://github.com/LisaHJung/Beginners-Crash-Course-to-the-Elastic-Stack-Series): 
