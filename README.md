@@ -966,6 +966,84 @@ The output would look like the following:
 
 ![movingFnOutput](images/movingFnOutput.png)
 
+#### Cumulative Cardinality
+
+This pipeline aggregation finds the cumulative cardinality of a parent aggregation. It is useful for finding things like total new items.
+
+For Example to find the total number of new users after every month we can use the following:
+```http
+GET ecommerce_data/_search
+{
+  "size": 0,
+  "aggs": {
+    "users_per_day": {
+      "date_histogram": {
+        "field": "InvoiceDate",
+        "calendar_interval": "1M"
+      },
+      "aggs": {
+        "distinct_users": {
+          "cardinality": {
+            "field": "CustomerID"
+          }
+        },
+        "total_new_users": {
+          "cumulative_cardinality": {
+            "buckets_path": "distinct_users"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+This results in:
+
+![cumulativeCardinalityOutput](images/cumulativeCardinalityOuput.png)
+
+##### Incremental Cumulative Cardinality
+Notice how the above only shows the total distinct users over time. If we wanted to get the number of new distinct users each month as compared to a running sum of new users over time we would need to add in a derivative.
+
+For Example:
+
+```http
+GET ecommerce_data/_search
+{
+  "size": 0,
+  "aggs": {
+    "users_per_day": {
+      "date_histogram": {
+        "field": "InvoiceDate",
+        "calendar_interval": "1M"
+      },
+      "aggs": {
+        "distinct_users": {
+          "cardinality": {
+            "field": "CustomerID"
+          }
+        },
+        "total_new_users": {
+          "cumulative_cardinality": {
+            "buckets_path": "distinct_users"
+          }
+        },
+        "incremental_new_users": {
+          "derivative": {
+            "buckets_path": "total_new_users"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+This would output the following:
+
+![incrementalCumulativeCardinality](images/incrementalCumulativeCardinality.png)
+
+
 ## Reference
 [Beginner's Crash Course to Elastic Stack](https://github.com/LisaHJung/Beginners-Crash-Course-to-the-Elastic-Stack-Series): 
 
