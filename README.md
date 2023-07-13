@@ -19,7 +19,7 @@ These are exact problems that I ran into while working with this dataset. The fo
 Copy and paste these requests into the Kibana console(Dev Tools) and run these requests in the order shown below. 
 
 **STEP 1: Create a new index(ecommerce_data) with the following mapping.** 
-```
+```http
 PUT ecommerce_data
 {
   "mappings": {
@@ -54,7 +54,7 @@ PUT ecommerce_data
 }
 ```   
 **STEP 2: Reindex the data from the original index(source) to the one you just created(destination).**
-```
+```http
 POST _reindex
 {
   "source": {
@@ -69,7 +69,7 @@ POST _reindex
 
 When you explore the minimum unit price in this dataset, you will see that the minimum unit price value is -11062.06. To keep our data simple, I used the delete_by_query API to remove all unit prices less than 1. 
 
-```
+```http
 POST ecommerce_data/_delete_by_query
 {
   "query": {
@@ -85,7 +85,7 @@ POST ecommerce_data/_delete_by_query
 **STEP 4: Remove values greater than 500 from the field "UnitPrice".**
 
 When you explore the maximum unit price in this dataset, you will see that the maximum unit price value is 38,970. When the data is manually examined, the majority of the unit prices are less than 500. The max value of 38,970 would skew the average. To simplify our demo, I used the delete_by_query API to remove all unit prices greater than 500.
-```
+```http
 POST ecommerce_data/_delete_by_query
 {
   "query": {
@@ -102,11 +102,11 @@ POST ecommerce_data/_delete_by_query
 The following query will retrieve information about documents in the `ecommerce_data` index. This query is a great way to explore the structure and content of your document. 
 
 Syntax: 
-```
+```http
 GET Enter_name_of_the_index_here/_search
 ```
 Example: 
-```
+```http
 GET ecommerce_data/_search
 ```
 Expected response from Elasticsearch:
@@ -119,7 +119,7 @@ The first hit(a document) is shown on lines 17-31. The field "source"(line 22) l
 
 ## Aggregations Request
 Syntax:
-```
+```http
 GET Enter_name_of_the_index_here/_search
 {
   "aggs": {
@@ -137,7 +137,7 @@ GET Enter_name_of_the_index_here/_search
 #### Compute the `sum` of all unit prices in the index
 
 Syntax:
-```
+```http
 GET Enter_name_of_the_index_here/_search
 {
   "aggs": {
@@ -150,7 +150,7 @@ GET Enter_name_of_the_index_here/_search
 }
 ```
 Example:
-```
+```http
 GET ecommerce_data/_search
 {
   "aggs": {
@@ -177,7 +177,7 @@ If the purpose of running an aggregation is solely to get the aggregations resul
 **Using a size parameter**
 
 Example:
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -199,7 +199,7 @@ We no longer need to minimize the hits to get access to the aggregations results
 #### Compute the lowest(`min`) unit price of an item 
 
 Syntax:
-```
+```http
 GET Enter_name_of_the_index_here/_search
 {
   "size": 0,
@@ -213,7 +213,7 @@ GET Enter_name_of_the_index_here/_search
 }
 ```
 Example: 
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -234,7 +234,7 @@ The lowest unit price of an item is 1.01.
 #### Compute the highest(`max`) unit price of an item 
 
 Syntax:
-```
+```http
 GET Enter_name_of_the_index_here/_search
 {
   "size": 0,
@@ -249,7 +249,7 @@ GET Enter_name_of_the_index_here/_search
 ```
 Example: 
 
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -271,7 +271,7 @@ The highest unit price of an item is 498.79.
 #### Compute the `average` unit price of items 
 
 Syntax:
-```
+```http
 GET Enter_name_of_the_index_here/_search
 {
   "size": 0,
@@ -285,7 +285,7 @@ GET Enter_name_of_the_index_here/_search
 }
 ```
 Example: 
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -307,7 +307,7 @@ The average unit price of an item is ~4.39.
 #### `Stats` Aggregation: Compute the count, min, max, avg, sum in one go
 
 Syntax:
-```
+```http
 GET Enter_name_of_the_index_here/_search
 {
   "size": 0,
@@ -321,7 +321,7 @@ GET Enter_name_of_the_index_here/_search
 }
 ```
 Example:
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -345,7 +345,7 @@ The `stats aggregation` will yield the values of `count`(the number of unit pric
 The `cardinality aggregation` computes the count of unique values for a given field. 
 
 Syntax:
-```
+```http
 GET Enter_name_of_the_index_here
 {
   "size": 0,
@@ -359,7 +359,7 @@ GET Enter_name_of_the_index_here
 }
 ```
 Example: 
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -388,7 +388,7 @@ To limit the scope of the aggregation, you can add a query clause to the aggrega
 The combined query and aggregations look like the following. 
 
 Syntax:
-```
+```http
 GET Enter_name_of_the_index_here/_search
 {
   "size": 0,
@@ -407,7 +407,7 @@ GET Enter_name_of_the_index_here/_search
 }
 ```
 Example: 
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -461,7 +461,7 @@ With the `fixed_interval`, the interval is always **constant**.
 Example: Create a bucket for every 8 hour interval. 
 
 Syntax:
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -477,7 +477,7 @@ GET ecommerce_data/_search
 ```
 
 Example:
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -511,7 +511,7 @@ A scenario where you might use the `calendar_interval` is when you want to calcu
 Ex. Split data into monthly buckets.
 
 Syntax:
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -526,7 +526,7 @@ GET ecommerce_data/_search
 }
 ```
 Example: 
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -554,7 +554,7 @@ values in ascending order.
 To reverse this order, you can add an `order` parameter to the `aggregations` as shown below. Then, specify that you want to sort buckets based on the "_key" values in descending(desc) order.
 
 Example:
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -585,7 +585,7 @@ The `histogram aggregation` creates buckets based on any numerical interval.
 Ex. Create a buckets based on price interval that increases in increments of 10. 
 
 Syntax: 
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -600,7 +600,7 @@ GET ecommerce_data/_search
 }
 ```
 Example: 
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -627,7 +627,7 @@ By default, the `histogram aggregation` sorts buckets based on the `_key`
 values in ascending order. To reverse this order, you can add an order parameter to the aggregation. Then, specify that you want to sort buckets based on the `_key` values in descending(desc) order! 
 
 Example:
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -657,7 +657,7 @@ The `range aggregation` is similar to the `histogram aggregation` in that it can
 For example, what if you wanted to know the number of transactions for items from varying price ranges(between 0 and $50, between $50-$200, and between $200 and up)? 
 
 Syntax:
-```
+```http
 GET Enter_name_of_the_index_here/_search
 {
   "size": 0,
@@ -681,9 +681,9 @@ GET Enter_name_of_the_index_here/_search
     }
   }
 }
-````
-Example: 
 ```
+Example: 
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -724,7 +724,7 @@ The `terms aggregation` creates a new bucket for every unique term it encounters
 For example, let's say you want to identify 5 customers with the highest number of transactions(documents). 
 
 Syntax:
-```
+```http
 GET Enter_name_of_the_index_here/_search
 {
   "aggs": {
@@ -738,7 +738,7 @@ GET Enter_name_of_the_index_here/_search
 }
 ```
 Example:
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -763,7 +763,7 @@ By default, the `terms aggregation` sorts buckets based on the "doc_count"
 values in descending order.  To reverse this order, you can add an order parameter to the aggregation. Then, specify that you want to sort buckets based on the `_count` values in ascending(asc) order! 
 
 Example:
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -803,7 +803,7 @@ Within each bucket, we need to perform `metric aggregations` to calculate the da
 
 #### Calculate the daily revenue
 The combined `aggregations` request looks like the following:
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -842,7 +842,7 @@ You can also calculate multiple metrics per bucket.
 For example, let's say you wanted to calculate the daily revenue and the number of unique customers per day in one go. To do this, you can add multiple `metric aggregations` per bucket as shown below!  
 
 Example: 
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
@@ -889,7 +889,7 @@ Let's say you wanted to find which day had the highest daily revenue to date!
 All you need to do is to add the "order" parameter( and sort buckets based on the metric value of "daily_revenue" in descending("desc") order! 
 
 Example:
-```
+```http
 GET ecommerce_data/_search
 {
   "size": 0,
