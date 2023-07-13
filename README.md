@@ -1000,7 +1000,7 @@ GET ecommerce_data/_search
 
 This results in:
 
-![cumulativeCardinalityOutput](images/cumulativeCardinalityOuput.png)
+![cumulativeCardinalityOutput](images/cumulativeCardinality.png)
 
 ##### Incremental Cumulative Cardinality
 Notice how the above only shows the total distinct users over time. If we wanted to get the number of new distinct users each month as compared to a running sum of new users over time we would need to add in a derivative.
